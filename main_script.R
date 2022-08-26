@@ -4,7 +4,7 @@
 #  Programmer:  QUETTIER THOMAS from previous GAMBAROTA scripts (https://github.com/shared-research/face-mask-gew.git) 
 #  Date:        0382022
 #  Description: Generate the dataset from Gorilla (https://app.gorilla.sc/) 
-#  Experiment CPO_moebius_AMIM1
+#  Experiment CPO_online_AMIM1
 #
 #  Update:      23/08/2022
 ###########################################################################
