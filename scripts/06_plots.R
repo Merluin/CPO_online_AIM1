@@ -104,7 +104,7 @@ neutral_plot <- dat_plot %>%
   ggplot(aes(x = x_cen, y = y_cen)) +
   ggpubr::background_image(bg) +
   geom_point(alpha = 0.5, aes(color = Wheel.name), show.legend = FALSE, size = 3) +
-  ggh4x::facet_nested(Wheel.name ~ emotion, switch="y") +
+  ggh4x::facet_nested(Wheel.name ~ intensity, switch="y") +
   coord_fixed(xlim = c(-300, 300), ylim = c(-300, 300)) +
   theme_minimal() +
   theme(axis.text.x = element_blank(),

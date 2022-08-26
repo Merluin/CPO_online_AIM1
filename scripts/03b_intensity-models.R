@@ -90,7 +90,7 @@ fit_ri_no2int <- brm(form_ri_no2int,
 
 success_step(fit_ri_no2int)
 
-# Model 5 - mask (neutral faces) ------------------------------------------
+# Model 3 - (neutral faces) ------------------------------------------
 
 form_ri_neu <- bf(
   int ~  0 + Intercept +  (1|id)

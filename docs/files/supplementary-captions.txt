@@ -1,8 +1,8 @@
 #gew-legend-neutral
-GEW legend (B) and responses to neutral facial expressions as a function of the Mask condition (A)
+GEW legend (B) and responses to neutral facial expressions as a function of the Intensity and Mapping Wheel 1 and 2 (A)
 
 #gew-emotions
-GEW responses as a function of displayed Emotion, Mask and Facial Expression Intensity.
+GEW responses as a function of displayed Emotion, Intensity and Mapping Wheel 1 and 2.
 
 #tab-info-models
 Table with model formulas, names and fitting parameters
