@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.26)  26 AUG 2022 13:09
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.26)  26 AUG 2022 16:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -668,13 +668,13 @@ File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 237.
 [4]
-<supplementary_files/figure-latex/gew-legend-neutral-1.pdf, id=175, 867.24pt x 325.215pt>
+<supplementary_files/figure-latex/gew-legend-neutral-1.pdf, id=159, 867.24pt x 325.215pt>
 File: supplementary_files/figure-latex/gew-legend-neutral-1.pdf Graphic file (type pdf)
 <use supplementary_files/figure-latex/gew-legend-neutral-1.pdf>
 Package pdftex.def Info: supplementary_files/figure-latex/gew-legend-neutral-1.pdf  used on input line 308.
 (pdftex.def)             Requested size: 469.75827pt x 176.15933pt.
 [5 <./supplementary_files/figure-latex/gew-legend-neutral-1.pdf>]
-<supplementary_files/figure-latex/gew-emotions-1.pdf, id=198, 939.51pt x 939.51pt>
+<supplementary_files/figure-latex/gew-emotions-1.pdf, id=187, 939.51pt x 939.51pt>
 File: supplementary_files/figure-latex/gew-emotions-1.pdf Graphic file (type pdf)
 <use supplementary_files/figure-latex/gew-emotions-1.pdf>
 Package pdftex.def Info: supplementary_files/figure-latex/gew-emotions-1.pdf  used on input line 320.
@@ -736,27 +736,25 @@ Overfull \hbox (2.30423pt too wide) in paragraph at lines 689--689
 
 [10] [11] [12] [13] [14] [15] [16] [17
 
-] [18] [19
-
-] [20
+] [18
 
 ] (./supplementary.aux)
 Package rerunfilecheck Info: File `supplementary.out' has not changed.
-(rerunfilecheck)             Checksum: B98D090C5153598B08D91F89E20523F0;3314.
+(rerunfilecheck)             Checksum: CF9F0E7FC87B36B79B4B3F6394028ECB;2883.
  ) 
 Here is how much of TeX's memory you used:
- 13753 strings out of 479489
- 219290 string characters out of 5873407
- 597481 words of memory out of 5000000
- 32041 multiletter control sequences out of 15000+600000
+ 13739 strings out of 479489
+ 219078 string characters out of 5873407
+ 597669 words of memory out of 5000000
+ 32035 multiletter control sequences out of 15000+600000
  551445 words of font info for 82 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,8n,77p,1613b,618s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{/Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}</Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx6.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx7.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx8.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri8.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></Users/thomasquettier/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on supplementary.pdf (20 pages, 2894678 bytes).
+Output written on supplementary.pdf (18 pages, 3063621 bytes).
 PDF statistics:
- 542 PDF objects out of 1000 (max. 8388607)
- 414 compressed objects within 5 object streams
- 127 named destinations out of 1000 (max. 500000)
- 195 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 515 PDF objects out of 1000 (max. 8388607)
+ 386 compressed objects within 4 object streams
+ 119 named destinations out of 1000 (max. 500000)
+ 171 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -1,5 +1,5 @@
 ---
-title: "**Mapping the Perception-space of Facial Expressions**"
+title: "**Mapping the Perception-space of Facial Expressions (Online Participants)**"
 subtitle: "Supplementary Materials"
 author: 
   - "Thomas Quettier"
@@ -127,7 +127,7 @@ I_{ij} = \sqrt{x^2 + y^2}
 
 ## Statistical models
 
-For the response angle (i.e., *bias* and *uncertainty*) we decided to use a *scale-location* mixed-effect model [@Burkner2018-vz; @Rigby2005-jq]. Under this framework, all parameters of a distribution can be predicted. In particular, we are predicting the *circular mean* (i.e., *bias*) and the *concentration* (i.e., *uncertainty*) Von Mises parameters as a function of Mask (with or without), Intensity (full and subtle) and Emotion (anger, happiness, disgust, fear, surprise and sadness). For the perceived intensity, we used a regular general linear mixed-effect model.
+For the response angle (i.e., *bias* and *uncertainty*) we decided to use a *scale-location* mixed-effect model [@Burkner2018-vz; @Rigby2005-jq]. Under this framework, all parameters of a distribution can be predicted. In particular, we are predicting the *circular mean* (i.e., *bias*) and the *concentration* (i.e., *uncertainty*) Von Mises parameters as a function of Intensity (full and subtle) and Emotion (anger, happiness, disgust, fear, surprise and sadness). For the perceived intensity, we used a regular general linear mixed-effect model.
 
 We estimated both models under a Bayesian framework the R software [@r-lang] using the Brms package [@Burkner2017-di] based on the STAN probabilistic programming language [@Carpenter2017-kf]. The Bayesian statistics consist in combining information from prior knowledge (i.e. *priors*) and the data (i.e., *likelihood*) to obtain the *posterior* distribution [@Kruschke2018-sm].
 
@@ -241,7 +241,7 @@ neutral_plot <- dat_plot %>%
   ggplot(aes(x = x_cen, y = y_cen)) +
   ggpubr::background_image(bg) +
   geom_point(alpha = 0.5, aes(color = Wheel.name), show.legend = FALSE, size = 3) +
-  ggh4x::facet_nested(Wheel.name ~ emotion, switch="y") +
+  ggh4x::facet_nested(Wheel.name ~ intensity, switch="y") +
   coord_fixed(xlim = c(-300, 300), ylim = c(-300, 300)) +
   theme_minimal() +
   theme(axis.text.x = element_blank(),
@@ -385,72 +385,6 @@ for(i in 1:length(intensity$tidy_fit)){
     # Models
     cat(paste("####", "Model", "\n"))
     intensity$tidy_fit[[i]] %>% 
-      qtab() %>% 
-      colformat_double(digits = 5) %>% 
-      set_caption("") %>% 
-      flextable_to_rmd()
-    newpage()
-  }
-}
-```
-
-# Priors Sensitivity
-
-In this section, using the same approach as before, we presented the same set of models fitted using very uninformative or flat priors. The rationale is to assess the impact of our main priors specification on parameter values. Comparing the values of the parameters with models in Section \@ref(fitted-models), there is almost no effect of our priors specification. Some models (especially TAS and AQ models) could have different priors on similar parameters depending on model complexity and convergence issues.
-
-## Bias/Uncertainty
-
-```{r prior-sens-circular, results='asis'}
-for(i in 1:length(circular$tidy_fit)){
-  
-  if(grepl("flat|un", names(circular$tidy_fit)[i])){
-    
-    # Title
-    cat(paste("###", names(circular$tidy_fit)[i]), "\n")
-  
-    # Priors
-    cat(paste("####", "Priors", "\n"))
-    circular$priors[[i]] %>% 
-      tidy_prior() %>% 
-      qtab() %>% 
-      set_caption("") %>% 
-      flextable_to_rmd()
-  
-    # Models
-    cat(paste("####", "Model", "\n"))
-    circular$tidy_fit[[i]] %>%
-      qtab() %>% 
-      colformat_double(digits = 5) %>% 
-      set_caption("") %>% 
-      flextable_to_rmd()
-    newpage()
-  }
-}
-```
-
-\newpage
-
-## Perceived Intensity
-
-```{r prior-sens-perceived-intensity, results='asis'}
-for(i in 1:length(intensity$tidy_fit)){
-  
-  if(grepl("flat|un", names(intensity$tidy_fit)[i])){
-    
-    # Title
-    cat(paste("###", names(intensity$tidy_fit)[i]), "\n")
-  
-    # Priors
-    cat(paste("####", "Priors", "\n"))
-    intensity$priors[[i]] %>% 
-      tidy_prior() %>% 
-      qtab() %>% 
-      set_caption("") %>% 
-      flextable_to_rmd()
-  
-    # Models
-    cat(paste("####", "Model", "\n"))
-    intensity$tidy_fit[[i]] %>%
       qtab() %>% 
       colformat_double(digits = 5) %>% 
       set_caption("") %>% 
