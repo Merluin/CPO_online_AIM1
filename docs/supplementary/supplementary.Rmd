@@ -131,7 +131,7 @@ For the response angle (i.e., *bias* and *uncertainty*) we decided to use a *sca
 
 We estimated both models under a Bayesian framework the R software [@r-lang] using the Brms package [@Burkner2017-di] based on the STAN probabilistic programming language [@Carpenter2017-kf]. The Bayesian statistics consist in combining information from prior knowledge (i.e. *priors*) and the data (i.e., *likelihood*) to obtain the *posterior* distribution [@Kruschke2018-sm].
 
-In terms of contrast coding, for categorical predictors, we used `sum contrasts` using the `contr.sum()` function. We used sum-contrasts with `0.5, -0.5` only for TAS and AQ models for interpreting directly the model parameters. We also mean-centered numeric predictors (TAS and AQ scores).
+In terms of contrast coding, for categorical predictors, we used `sum contrasts` using the `contr.sum()` function. 
 
 ### `brms`
 
@@ -150,7 +150,6 @@ brm(formula, # model formula
     chains = 15,
     cores = 15,
     iter = 4000,
-    backend = "cmdstanr", # or the standard backend, depending on how to setup the parallelization
     sample_prior = "yes",
     save_pars = save_pars(all = TRUE),
     seed = 2022)
@@ -167,7 +166,6 @@ brm(int ~ ... + (1|id),
     chains = 15,
     cores = 15,
     iter = 4000,
-    backend = "cmdstanr", # or the standard backend, depending on how to setup the parallelization
     save_pars = save_pars(all = TRUE),
     sample_prior = "yes",
     seed = 2022)
@@ -189,7 +187,6 @@ brm(form,
     cores = 4,
     iter = 10000,
     sample_prior = "yes",
-    backend = "cmdstanr",
     threads = threading(6),  # within-chains parallellization
     save_pars = save_pars(all = TRUE),
     seed = seed)
@@ -232,9 +229,8 @@ gew_legend <- emo_coords %>%
   coord_fixed(xlim = c(-300, 300), ylim = c(-300, 300))
 
 dat_plot <- dat %>% 
-  select(emotion, mask, intensity, x_cen, y_cen) %>% 
-  mutate(mask = ifelse(mask == "yes", "Mask", "No Mask"),
-         intensity = stringr::str_to_title(intensity),
+  select(Exp.group,Wheel.task,emotion,Wheel.name, Video.intensity, x_cen, y_cen) %>% 
+  mutate( intensity = stringr::str_to_title(Video.intensity),
          emotion = stringr::str_to_title(emotion),
          emotion = ifelse(emotion == "Neutrality", "Neutral", emotion),
          emotion = factor(emotion),
@@ -244,8 +240,8 @@ neutral_plot <- dat_plot %>%
   filter(emotion == "Neutral") %>% 
   ggplot(aes(x = x_cen, y = y_cen)) +
   ggpubr::background_image(bg) +
-  geom_point(alpha = 0.5, aes(color = mask), show.legend = FALSE, size = 3) +
-  ggh4x::facet_nested(mask ~ emotion, switch="y") +
+  geom_point(alpha = 0.5, aes(color = Wheel.name), show.legend = FALSE, size = 3) +
+  ggh4x::facet_nested(Wheel.name ~ emotion, switch="y") +
   coord_fixed(xlim = c(-300, 300), ylim = c(-300, 300)) +
   theme_minimal() +
   theme(axis.text.x = element_blank(),
@@ -275,12 +271,8 @@ plots$plot_gew_emotions
 
 Table \@ref(tab:tab-info-models) depicts all fitted models with main parameters. To read the table:
 
-- `fit_ri_int`: the random-intercept three-way interaction model for *bias*/*uncertainty* and *perceived intensity*
-- `fit_ri_no3int`: the random-intercept model without the three-way interaction *bias*/*uncertainty* and *perceived intensity*
-- `fit_ri_aq_mask`: the random-intercept model with the Autism-Spectrum Quotient test (AQ) for *bias*/*uncertainty* and *perceived intensity* (Mask effect)
-- `fit_ri_tas_mask`: the random-intercept model with the Toronto Alexithymia Scale (TAS) *bias*/*uncertainty* and *perceived intensity* (Mask effect)
-- `fit_ri_tas_subtle`: the random-intercept model with the Toronto Alexithymia Scale (TAS) *bias*/*uncertainty* and *perceived intensity* (Mask effect only for subtle facial expressions)
-- `fit_ri_tas_subtle`: the random-intercept model with the Autism-Spectrum Quotient test (AQ) for *bias*/*uncertainty* and *perceived intensity* (Mask effect only for subtle facial expressions)
+- `fit_ri_int`: the random-intercept two-way interaction model for *bias*/*uncertainty* and *perceived intensity*
+- `fit_ri_no2int`: the random-intercept model without the two-way interaction *bias*/*uncertainty* and *perceived intensity*
 - `fit_*un/flat`: models with completely uninformative or flat priors
 
 \blandscape
