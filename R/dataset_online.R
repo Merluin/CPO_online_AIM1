@@ -27,7 +27,9 @@ info<-info%>%
   spread(Question.Key,Response)%>%
   'colnames<-'(c("Participant.Public.ID" ,"Participant.Private.ID","gender","mail", "study","ID"))%>%
 mutate(ID = c("VICENZA" ,"FIRENZE",  "MATERA",  "VERONA",  "NAPOLI", "BARI","BOLOGNA", "ROMA","MILANO", "ANCONA", "TREVISO","TORINO", "PESCARA"),
-       age = c(NA,50,37,59,62,61,41,NA,29,45,52,38,48))
+       age = c(NA,50,37,59,62,61,41,NA,29,45,52,38,48),
+       MADRS = c(18,8,14,9,5,25,0,0,11,8,4,9,13),
+       )
 
 # Task Dataset ------------------------------------------------------------
 
