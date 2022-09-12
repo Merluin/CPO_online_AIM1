@@ -15,6 +15,7 @@ rm(list=ls()) # remove all objects
 
 library(tidyverse)
 library(brms)
+library(emmeans)
 
 # Functions ---------------------------------------------------------------
 
@@ -23,8 +24,8 @@ devtools::load_all()
 # Setup -------------------------------------------------------------------
 
 seed <- 2022
-chains <- 15
-iter <- 4000
+chains <- 10
+iter <- 8000
 cores <- chains  
 samp_prior <- "yes"
 
@@ -43,6 +44,7 @@ dat_fit_subtle <- dat_fit %>%
 
 # ri = by-subject random intercept
 # int = 2 way interaction (emotion * intensity)
+# 3int = 3 way interaction (emotion * intensity * sonnybrook)
 # no2int = no 2 way interaction (emotion + intensity)
 # tas_mask = tas * mask
 # neu = only neutral
@@ -72,6 +74,29 @@ fit_ri_int <- brm(form_ri_int,
                   seed = seed)
 
 success_step(fit_ri_int)
+
+# Model 1b - Emotion  * intensity * sonnybrook------------------------------------
+form_ri_int <- bf(diff_theta ~ emotion *  intensity * Pt.sb + (1|id))
+
+fit_ri_3int <- brm(form_ri_int,
+                  data = dat_fit,
+                  prior = prior_von_mises,
+                  family = von_mises(link = "tan_half"),
+                  chains = chains,
+                  cores = cores,
+                  iter = iter,
+                  sample_prior = samp_prior,
+                  file = file.path("models","theta","fit_ri_3int.rds"),
+                  save_pars = save_pars(all = TRUE),
+                  seed = seed,
+                  control=list(adapt_delta=0.99, 
+                               max_treedepth=13)) 
+
+success_step(fit_ri_3int)
+
+emtrends(fit_ri_3int, ~intensity|emotion ,var = "Pt.sb")
+summary(dataset_fit_ri_3int)
+emtrends(dataset_fit_ri_3int, ~intensity|emotion ,var = "Pt.sb")
 
 # Model 2 - Emotion + intensity ------------------------------------
 
@@ -121,8 +146,12 @@ fit_ri_neu <- brm(form_ri_neu,
 
 success_step(fit_ri_neu)
 
+
+loo(dataset_fit_ri_int,fit_ri_3int,dataset_fit_ri_no2int)
+
 #################################################
 # 
 # END
 #
 #################################################
+
