@@ -43,6 +43,7 @@ dat_fit_subtle <- dat_fit %>%
 
 # ri = by-subject random intercept
 # int = 2 way interaction (emotion * intensity)
+# 3int = 3 way interaction (emotion * intensity * sonnybrook)
 # no2int = no 2 way interaction (emotion + intensity)
 # tas_mask = tas * mask
 # neu = only neutral
@@ -56,6 +57,31 @@ prior_gaussian <- c(
 
 form_ri_int <- bf(
   int ~  0 + Intercept + emotion *  intensity + (1|id)
+)
+
+fit_ri_int <- brm(form_ri_int,
+                  data = dat_fit,
+                  prior = prior_gaussian,
+                  family = gaussian(),
+                  chains = chains,
+                  cores = cores,
+                  iter = iter,
+                  file = file.path("models","intensity",paste0(datasetname,"_fit_ri_int.rds")),
+                  save_pars = save_pars(all = TRUE),
+                  sample_prior = samp_prior,
+                  seed = seed)
+
+success_step(fit_ri_int)
+
+# Model 3 int - Emotion  * intensity * Pt.gruppo------------------------------------
+
+prior_gaussian <- c(
+  prior(normal(150, 100), class = "b", coef = "Intercept"),
+  prior(normal(0, 50), class = "b")
+)
+
+form_ri_int <- bf(
+  int ~  0 + Intercept + emotion *  intensity * Pt.gruppo + (1|id)
 )
 
 fit_ri_int <- brm(form_ri_int,

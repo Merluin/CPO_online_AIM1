@@ -75,8 +75,10 @@ fit_ri_int <- brm(form_ri_int,
 
 success_step(fit_ri_int)
 
-# Model 1b - Emotion  * intensity * sonnybrook------------------------------------
-form_ri_int <- bf(diff_theta ~ emotion *  intensity * Pt.sb + (1|id))
+# Model 1b - Emotion  * intensity * Pt.gruppo------------------------------------
+prior_von_mises <- c(prior(normal(0, 2), class = "b", dpar = ""))
+
+form_ri_int <- bf(diff_theta ~ emotion *  intensity * Pt.gruppo + (1|id))
 
 fit_ri_3int <- brm(form_ri_int,
                   data = dat_fit,

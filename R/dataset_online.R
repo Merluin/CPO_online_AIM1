@@ -15,21 +15,27 @@ library(tidyverse)
 
 # Parameters --------------------------------------------------------------
 folder_dir<-  file.path("original_data")
-filetask<-list.files(folder_dir,pattern= 'task')
-fileq<-list.files(folder_dir,pattern= 'questionnaire')
+filetask<-list.files(folder_dir,pattern= 'task') # from gorilla
+fileq<-list.files(folder_dir,pattern= 'questionnaire') # from gorilla
+filedemo<-list.files(folder_dir,pattern= 'Pazienti') # from drive
+
+
+# Demographic Dataset ------------------------------------------------------------
+demo<- read.csv(file.path(folder_dir,filedemo), sep=",", header=TRUE,stringsAsFactors = FALSE,na.strings= "aa")%>%
+  filter(Exp.online == "TRUE")%>%
+  select(ID_gorilla,Codice.città,Gruppo,Genere,Età,Anni.istruzione,Sunnybrook,MADRS.Tot)%>%
+  'colnames<-'(c("Participant.Public.ID" ,"ID","gruppo","gender","age", "study","SB","madrs"))
 
 
 # Info Dataset ------------------------------------------------------------
-info<- read.csv(file.path(folder_dir,fileq), sep=",", header=TRUE,stringsAsFactors = FALSE)
-info<-info%>%
-  filter(Question.Key == "response-3"| Question.Key ==  "gender" | Question.Key == "response-1"| Question.Key == "respondent-email")%>%
-  select( "Participant.Public.ID" ,"Participant.Private.ID","Question.Key","Response")%>%
-  spread(Question.Key,Response)%>%
-  'colnames<-'(c("Participant.Public.ID" ,"Participant.Private.ID","gender","mail", "study","ID"))%>%
-mutate(ID = c("VICENZA" ,"FIRENZE",  "MATERA",  "VERONA",  "NAPOLI", "BARI","BOLOGNA", "ROMA","MILANO", "ANCONA", "TREVISO","TORINO", "PESCARA"),
-       age = c(NA,50,37,59,62,61,41,NA,29,45,52,38,48),
-       MADRS = c(18,8,14,9,5,25,0,0,11,8,4,9,13),
-       SB = c(39,50,44,56,41,87,65,56,44,32,90,80,43))
+# info<- read.csv(file.path(folder_dir,fileq), sep=",", header=TRUE,stringsAsFactors = FALSE)
+# info<-info%>%
+#   filter(Question.Key == "response-3"| Question.Key ==  "gender" | Question.Key == "response-1"| Question.Key == "respondent-email")%>%
+#   select( "Participant.Public.ID" ,"Participant.Private.ID","Question.Key","Response")%>%
+#   spread(Question.Key,Response)%>%
+#   'colnames<-'(c("Participant.Public.ID" ,"Participant.Private.ID","gender","mail", "study","ID"))
+
+
 
 # Task Dataset ------------------------------------------------------------
 
@@ -41,11 +47,11 @@ select( "Local.Date", "Participant.Public.ID" ,"Trial.Number",
   "Videos", "intensity", "file_gender", "duration","emotion", "identity")
 
 # Final Dataset -----------------------------------------------------------
-data<-left_join(info,dataset, by = "Participant.Public.ID")%>%
-  select("Local.Date","Trial.Number","Participant.Public.ID","ID" ,"gender","study","age", "SB",
+data<-left_join(demo,dataset, by = "Participant.Public.ID")%>%
+  select("Local.Date","Trial.Number","Participant.Public.ID","ID", "gruppo","gender","study","age", "SB","madrs",
      "Screen.Name", "Reaction.Time", "X.Coordinate", "Y.Coordinate", "display", 
     "Videos", "intensity", "file_gender", "emotion", "identity")%>%
-  'colnames<-'(c("Exp.date","Exp.trial","Pt.Public.ID","Pt.code" ,"Pt.gender","Pt.study", "Pt.age","Pt.sb",
+  'colnames<-'(c("Exp.date","Exp.trial","Pt.Public.ID","Pt.code" ,"Pt.gender","Pt.gruppo","Pt.study", "Pt.age","Pt.sb","Pt.madrs",
                 "Wheel.name", "Wheel.rt", "Wheel.x", "Wheel.y", "Wheel.task", 
                "Video.name", "Video.intensity", "Video.gender", "Video.emotion", "Video.id"))%>%
   mutate(Wheel.y = Wheel.y - 300,
