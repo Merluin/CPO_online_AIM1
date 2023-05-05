@@ -15,6 +15,8 @@ rm(list=ls()) # remove all objects
 
 library(tidyverse)
 library(brms)
+library(afex)
+library(emmeans)
 
 # Functions ---------------------------------------------------------------
 
@@ -47,6 +49,27 @@ dat_fit_subtle <- dat_fit %>%
 # no2int = no 2 way interaction (emotion + intensity)
 # tas_mask = tas * mask
 # neu = only neutral
+
+# Anova ------------------------------------
+datanova <- dat%>%
+  filter(Wheel.task == "task" & Wheel.name == "GW1")%>%
+  mutate(Video.emotion = case_when(Video.emotion == "sad" ~ "sadness",
+                                   Video.emotion == "fear"~ "fear",
+                                   Video.emotion == "angry"~ "anger",
+                                   Video.emotion == "disgusted"~ "disgust",
+                                   Video.emotion == "surprised"~ "surprise",
+                                   Video.emotion == "neutral"~ "neutral",
+                                   Video.emotion == "happy"~ "happiness"),
+         correct = ifelse(Video.emotion == resp_emotion_label, 1,0))%>%
+  dplyr::select(Pt.code,int,Video.intensity,Video.emotion,resp_emotion_label,Pt.gender,correct)%>%
+  'colnames<-'(c("subject","valuation" ,"full/subtle", "emotion","resp","group","correct"))%>%
+  filter(correct == 1)
+
+a1 <- aov_ez("subject", "valuation", datanova,  within = c("full/subtle", "emotion"), between = c("group"))
+m1<-emmeans(a1,pairwise~ `full/subtle`,adjust="bonf")
+
+a2 <- aov_ez("subject", "valuation", datanova%>%filter(`full/subtle` == "full"),  within = c( "emotion"), between = c("group"))
+a3 <- aov_ez("subject", "valuation", datanova%>%filter(`full/subtle` == "subtle"),  within = c( "emotion"), between = c("group"))
 
 # Model 1 - Emotion  * intensity ------------------------------------
 
