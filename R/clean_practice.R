@@ -10,7 +10,7 @@ clean_practice <- function(x){
 
   
   if(colnames(x[1]) == "practice_column" ){x <-x%>%
-    select(multiple_practice_colums)
+    dplyr::select(multiple_practice_colums)
   }
   
   x <-x%>%

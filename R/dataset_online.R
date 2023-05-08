@@ -23,7 +23,7 @@ filedemo<-list.files(folder_dir,pattern= 'Pazienti') # from drive
 # Demographic Dataset ------------------------------------------------------------
 demo<- read.csv(file.path(folder_dir,filedemo), sep=",", header=TRUE,stringsAsFactors = FALSE,na.strings= "aa")%>%
   filter(Exp.online == "TRUE")%>%
-  select(ID_gorilla,Codice.città,Gruppo,Genere,Età,Anni.istruzione,Sunnybrook,MADRS.Tot)%>%
+  dplyr::select(ID_gorilla,Codice.città,Gruppo,Genere,Età,Anni.istruzione,Sunnybrook,MADRS.Tot)%>%
   'colnames<-'(c("Participant.Public.ID" ,"ID","gruppo","gender","age", "study","SB","madrs"))
 
 
@@ -42,13 +42,13 @@ demo<- read.csv(file.path(folder_dir,filedemo), sep=",", header=TRUE,stringsAsFa
 dataset <- read.csv(file.path(folder_dir,filetask), sep=",", header=TRUE,stringsAsFactors = FALSE)
 dataset<-dataset%>%
   filter(Response == "click"| Zone.Type ==  "timelimit_screen")%>%
-select( "Local.Date", "Participant.Public.ID" ,"Trial.Number",
+dplyr::select( "Local.Date", "Participant.Public.ID" ,"Trial.Number",
   "Screen.Name", "Reaction.Time", "X.Coordinate", "Y.Coordinate", "display", 
   "Videos", "intensity", "file_gender", "duration","emotion", "identity")
 
 # Final Dataset -----------------------------------------------------------
 data<-left_join(demo,dataset, by = "Participant.Public.ID")%>%
-  select("Local.Date","Trial.Number","Participant.Public.ID","ID", "gruppo","gender","study","age", "SB","madrs",
+  dplyr::select("Local.Date","Trial.Number","Participant.Public.ID","ID", "gruppo","gender","study","age", "SB","madrs",
      "Screen.Name", "Reaction.Time", "X.Coordinate", "Y.Coordinate", "display", 
     "Videos", "intensity", "file_gender", "emotion", "identity")%>%
   'colnames<-'(c("Exp.date","Exp.trial","Pt.Public.ID","Pt.code" ,"Pt.gender","Pt.gruppo","Pt.study", "Pt.age","Pt.sb","Pt.madrs",
