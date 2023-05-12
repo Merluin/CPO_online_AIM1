@@ -56,6 +56,25 @@ prior_von_mises <- c(
   prior(normal(0, 2), class = "b", dpar = "kappa") # kappa prior
 )
 
+# Model 1 - Emotion   ------------------------------------
+
+form_ri <- bf(diff_theta ~ emotion  + (1|id), 
+                  kappa ~  emotion  + (1|id))
+
+fit_ri <- brm(form_ri,
+                  data = dat_fit,
+                  prior = prior_von_mises,
+                  family = von_mises(link = "tan_half", link_kappa = "log"),
+                  chains = chains,
+                  cores = cores,
+                  iter = iter,
+                  sample_prior = samp_prior,
+                  file = file.path("models","theta",paste0(datasetname,"_fit_ri.rds")),
+                  save_pars = save_pars(all = TRUE),
+                  seed = seed)
+
+success_step(fit_ri)
+
 # Model 1 - Emotion  * intensity ------------------------------------
 
 form_ri_int <- bf(diff_theta ~ emotion *  intensity + (1|id), 
@@ -100,12 +119,12 @@ emtrends(fit_ri_3int, ~intensity|emotion ,var = "Pt.sb")
 summary(dataset_fit_ri_3int)
 emtrends(dataset_fit_ri_3int, ~intensity|emotion ,var = "Pt.sb")
 
-# Model 2 - Emotion + intensity ------------------------------------
+# Model 2 - Emotion + intensity + gruppo------------------------------------
 
-form_ri_no2int <- bf(diff_theta ~ emotion + intensity   + (1|id), 
+form_ri_noint <- bf(diff_theta ~ emotion + intensity + Pt.gruppo + (1|id), 
                      kappa ~ emotion + intensity   + (1|id))
                   
-fit_ri_no2int <- brm(form_ri_no2int,
+fit_ri_noint <- brm(form_ri_noint,
                   data = dat_fit,
                   prior = prior_von_mises,
                   family = von_mises(link = "tan_half", link_kappa = "log"),
@@ -113,11 +132,11 @@ fit_ri_no2int <- brm(form_ri_no2int,
                   cores = cores,
                   iter = iter,
                   sample_prior = samp_prior,
-                  file = file.path("models","theta",paste0(datasetname,"_fit_ri_no2int.rds")),
+                  file = file.path("models","theta",paste0(datasetname,"_fit_ri_noint.rds")),
                   save_pars = save_pars(all = TRUE),
                   seed = seed)
 
-success_step(fit_ri_no2int)
+success_step(fit_ri_noint)
 
 # Model 3 - (neutral faces) ------------------------------------------
 

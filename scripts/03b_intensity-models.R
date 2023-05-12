@@ -51,27 +51,52 @@ dat_fit_subtle <- dat_fit %>%
 # neu = only neutral
 
 # Anova ------------------------------------
-datanova <- dat%>%
-  filter(Wheel.task == "task" & Wheel.name == "GW1")%>%
-  mutate(Video.emotion = case_when(Video.emotion == "sad" ~ "sadness",
-                                   Video.emotion == "fear"~ "fear",
-                                   Video.emotion == "angry"~ "anger",
-                                   Video.emotion == "disgusted"~ "disgust",
-                                   Video.emotion == "surprised"~ "surprise",
-                                   Video.emotion == "neutral"~ "neutral",
-                                   Video.emotion == "happy"~ "happiness"),
-         correct = ifelse(Video.emotion == resp_emotion_label, 1,0))%>%
-  dplyr::select(Pt.code,int,Video.intensity,Video.emotion,resp_emotion_label,Pt.gender,correct)%>%
-  'colnames<-'(c("subject","valuation" ,"full/subtle", "emotion","resp","group","correct"))%>%
-  filter(correct == 1)
+# datanova <- dat%>%
+#   filter(Wheel.task == "task" & Wheel.name == "GW1")%>%
+#   mutate(Video.emotion = case_when(Video.emotion == "sad" ~ "sadness",
+#                                    Video.emotion == "fear"~ "fear",
+#                                    Video.emotion == "angry"~ "anger",
+#                                    Video.emotion == "disgusted"~ "disgust",
+#                                    Video.emotion == "surprised"~ "surprise",
+#                                    Video.emotion == "neutral"~ "neutral",
+#                                    Video.emotion == "happy"~ "happiness"),
+#          correct = ifelse(Video.emotion == resp_emotion_label, 1,0))%>%
+#   dplyr::select(Pt.code,int,Video.intensity,Video.emotion,resp_emotion_label,Pt.gender,correct)%>%
+#   'colnames<-'(c("subject","valuation" ,"full/subtle", "emotion","resp","group","correct"))%>%
+#   filter(correct == 1)
+# 
+# a1 <- aov_ez("subject", "valuation", datanova,  within = c("full/subtle", "emotion"), between = c("group"))
+# m1<-emmeans(a1,pairwise~ `full/subtle`,adjust="bonf")
+# 
+# a2 <- aov_ez("subject", "valuation", datanova%>%filter(`full/subtle` == "full"),  within = c( "emotion"), between = c("group"))
+# a3 <- aov_ez("subject", "valuation", datanova%>%filter(`full/subtle` == "subtle"),  within = c( "emotion"), between = c("group"))
 
-a1 <- aov_ez("subject", "valuation", datanova,  within = c("full/subtle", "emotion"), between = c("group"))
-m1<-emmeans(a1,pairwise~ `full/subtle`,adjust="bonf")
+# Model 1 - Emotion ------------------------------------
 
-a2 <- aov_ez("subject", "valuation", datanova%>%filter(`full/subtle` == "full"),  within = c( "emotion"), between = c("group"))
-a3 <- aov_ez("subject", "valuation", datanova%>%filter(`full/subtle` == "subtle"),  within = c( "emotion"), between = c("group"))
+prior_gaussian <- c(
+  prior(normal(150, 100), class = "b", coef = "Intercept"),
+  prior(normal(0, 50), class = "b")
+)
 
-# Model 1 - Emotion  * intensity ------------------------------------
+form_ri <- bf(
+  int ~  0 + Intercept + emotion  + (1|id)
+)
+
+fit_ri <- brm(form_ri,
+                  data = dat_fit,
+                  prior = prior_gaussian,
+                  family = gaussian(),
+                  chains = chains,
+                  cores = cores,
+                  iter = iter,
+                  file = file.path("models","intensity",paste0(datasetname,"_fit_ri.rds")),
+                  save_pars = save_pars(all = TRUE),
+                  sample_prior = samp_prior,
+                  seed = seed)
+
+success_step(fit_ri)
+
+# Model 1a - Emotion  * intensity ------------------------------------
 
 prior_gaussian <- c(
   prior(normal(150, 100), class = "b", coef = "Intercept"),
@@ -96,34 +121,34 @@ fit_ri_int <- brm(form_ri_int,
 
 success_step(fit_ri_int)
 
-# Model 3 int - Emotion  * intensity * Pt.gruppo------------------------------------
+# Model 1b int - Emotion  * intensity * Pt.gruppo------------------------------------
 
 prior_gaussian <- c(
   prior(normal(150, 100), class = "b", coef = "Intercept"),
   prior(normal(0, 50), class = "b")
 )
 
-form_ri_int <- bf(
+form_ri_3int <- bf(
   int ~  0 + Intercept + emotion *  intensity * Pt.gruppo + (1|id)
 )
 
-fit_ri_int <- brm(form_ri_int,
+fit_ri_3int <- brm(form_ri_3int,
                   data = dat_fit,
                   prior = prior_gaussian,
                   family = gaussian(),
                   chains = chains,
                   cores = cores,
                   iter = iter,
-                  file = file.path("models","intensity",paste0(datasetname,"_fit_ri_int.rds")),
+                  file = file.path("models","intensity",paste0(datasetname,"_fit_ri_3int.rds")),
                   save_pars = save_pars(all = TRUE),
                   sample_prior = samp_prior,
                   seed = seed)
 
-success_step(fit_ri_int)
+success_step(fit_ri_3int)
 
-# Model 2 - Emotion  + intensity ----------------------------------------
+# Model 2 - Emotion  + intensity + group----------------------------------------
 
-form_ri_no2int <- bf(int ~ 0 + Intercept + emotion + intensity + (1|id))
+form_ri_no2int <- bf(int ~ 0 + Intercept + emotion + intensity + Pt.gruppo + (1|id))
 
 fit_ri_no2int <- brm(form_ri_no2int,
                   data = dat_fit,
@@ -138,6 +163,8 @@ fit_ri_no2int <- brm(form_ri_no2int,
                   seed = seed)
 
 success_step(fit_ri_no2int)
+
+
 
 # Model 3 - (neutral faces) ------------------------------------------
 
