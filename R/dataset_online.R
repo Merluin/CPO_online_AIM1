@@ -24,8 +24,8 @@ filedemo<-list.files(folder_dir,pattern= 'Pazienti') # from drive
 demo<- read.csv(file.path(folder_dir,filedemo), sep=",", header=TRUE,stringsAsFactors = FALSE,na.strings= "aa")%>%
   filter(Exp.online == "TRUE")%>%
   dplyr::select(ID_gorilla,Codice.città,Gruppo,Genere,Età,Anni.istruzione,Sunnybrook,MADRS.Tot)%>%
-  'colnames<-'(c("Participant.Public.ID" ,"ID","gruppo","gender","age", "study","SB","madrs"))
-
+  'colnames<-'(c("Participant.Public.ID" ,"code","gruppo","gender","age", "study","SB","madrs"))
+demo$id <- row.names(demo)
 
 # Info Dataset ------------------------------------------------------------
 # info<- read.csv(file.path(folder_dir,fileq), sep=",", header=TRUE,stringsAsFactors = FALSE)
@@ -48,10 +48,10 @@ dplyr::select( "Local.Date", "Participant.Public.ID" ,"Trial.Number",
 
 # Final Dataset -----------------------------------------------------------
 data<-left_join(demo,dataset, by = "Participant.Public.ID")%>%
-  dplyr::select("Local.Date","Trial.Number","Participant.Public.ID","ID", "gruppo","gender","study","age", "SB","madrs",
+  dplyr::select("Local.Date","Trial.Number","Participant.Public.ID","code", "gruppo","gender","study","age", "SB","madrs","id",
      "Screen.Name", "Reaction.Time", "X.Coordinate", "Y.Coordinate", "display", 
     "Videos", "intensity", "file_gender", "emotion", "identity")%>%
-  'colnames<-'(c("Exp.date","Exp.trial","Pt.Public.ID","Pt.code" ,"Pt.gender","Pt.gruppo","Pt.study", "Pt.age","Pt.sb","Pt.madrs",
+  'colnames<-'(c("Exp.date","Exp.trial","Pt.Public.ID","Pt.code" ,"Pt.group","Pt.gender","Pt.study", "Pt.age","Pt.sb","Pt.madrs","id",
                 "Wheel.name", "Wheel.rt", "Wheel.x", "Wheel.y", "Wheel.task", 
                "Video.name", "Video.intensity", "Video.gender", "Video.emotion", "Video.id"))%>%
   mutate(Wheel.y = Wheel.y - 300,
@@ -61,6 +61,7 @@ data<-left_join(demo,dataset, by = "Participant.Public.ID")%>%
          Pt.Public.ID = as.factor(Pt.Public.ID),
          Pt.code = as.factor(Pt.code),
          Pt.gender = as.factor(Pt.gender),
+         Pt.group = ifelse(Pt.group == "pazienti","palsy","control"),
          Pt.study = as.numeric(Pt.study),
          Pt.age = as.numeric(Pt.age),
          Wheel.name = as.factor(Wheel.name),

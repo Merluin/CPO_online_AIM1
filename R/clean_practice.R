@@ -18,6 +18,17 @@ clean_practice <- function(x){
       participant = as.numeric(as.character(participant)),
       id= paste0(experimenter,".",participant))
   
+  x <-x%>%
+    mutate(participant = gsub( "\\D+","",participant),
+           participant = as.numeric(as.character(participant)),
+           id= paste0(experimenter,".",participant),
+           education = as.numeric(as.character(education)),
+           sex = as.character(sex),
+           group = tolower(group),
+           ID.subject = paste0(participant,"_",group))%>%
+    dplyr::select(-contains(c("started","stopped")))
+  
+  
   return(x)
 
 ###########################################################################
