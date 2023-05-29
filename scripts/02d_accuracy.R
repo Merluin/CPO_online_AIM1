@@ -58,7 +58,7 @@ dat <- readRDS(file.path("data",paste0(datasetname,"_valid.rds")))
 correct_data <-  dat_fit %>%
   filter(Wheel.name == "GW1")%>%
   mutate(correct = ifelse(emotion == resp_emotion_label, 1, 0)) %>%
-  dplyr::select(id,  video_set, emotion, Pt.group, correct) %>%
+  dplyr::select(Pt.code,  video_set, emotion, Pt.group, correct) %>%
   'colnames<-'(c("subject" ,"video_set", "emotion", "group", "correct"))
 
 accuracy<-correct_data%>%
@@ -87,9 +87,9 @@ plot_gew_discrete <- dat_summ %>%
   filter(Wheel.name == GEW[i] )%>%
   mutate(video_set = stringr::str_to_title(video_set)) %>% 
   clean_emotion_names(emotion) %>% 
-  ggplot(aes(x = resp_emotion_label, y = n, fill = video_set)) +
+  ggplot(aes(x = resp_emotion_label, y = n, fill = Pt.group)) +
   geom_col(position = position_dodge()) +
-  facet_grid(emotion~Pt.group) +
+  facet_grid(emotion~video_set) +
   cowplot::theme_minimal_hgrid() +
   theme_paper(font_size = 10) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1,
@@ -140,7 +140,8 @@ for(i in 1:length(emo)){
   
   # Adatta il modello di regressione logistica
   x<-correct_data%>%
-    mutate(correct = as.factor(correct))%>%
+   mutate(correct = as.factor(correct),
+          group = as.factor(group),)%>%
     filter(emotion == emo[i])%>%
     na.omit()%>%
     mutate(video_set = as.factor(video_set))
@@ -148,10 +149,6 @@ for(i in 1:length(emo)){
   fit <- glm(correct ~  group * video_set, data = x, family = binomial)
   
   x$predicted_prob <- predict(fit, type = "response")
-  
-
-  
-  
   
   # fit <- lmer(acc ~  group * video_set + (1|subject),
   #                  data = accuracy%>%
@@ -162,18 +159,6 @@ for(i in 1:length(emo)){
   
   # Perform ANOVA
   chiquadro <- car::Anova(fit, type = 3)
-  
-  # Generate model plot
-  plot <-   # Visualizza le stime di probabilità
-    ggplot(x, aes(x = group, y = predicted_prob, color = video_set)) +
-    geom_point(position = position_dodge(0.9), size = 3) +
-    labs(x = "Group", y = "Predicted Probability", color = "Video Set")
-    
-    # flexplot::visualize(fit, plot = "model") +
-    # theme(legend.position = "none") +
-    # ylab("accuracy") +
-    # xlab(paste("Video", emo[i]))
-    # 
   # Create ANOVA table
   chi_table <- chiquadro %>%
     drop_na(`Pr(>Chisq)`) %>%
@@ -182,8 +167,40 @@ for(i in 1:length(emo)){
     column_spec(4, color = ifelse(chiquadro$`Pr(>Chisq)` <= 0.05, "red", "black")) %>%
     kable_classic(full_width = F, html_font = "Cambria")
   
+  #Contrasts
+ group<- testInteractions(fit, pairwise = "group", adjustment = "fdr")
+ video<- testInteractions(fit, pairwise = "video_set", adjustment = "fdr")
+ interaction<- testInteractions(fit, pairwise = "group", fixed = "video_set", adjustment = "fdr")
+ 
+  contrast<-rbind(group,
+                  video[1,],
+                  interaction[1,])
+  
+  p_red<- chiquadro
+  p_red[4,]<-p_red[3,]
+  
+  contrast<-contrast%>%
+    drop_na(`Pr(>Chisq)`) %>%
+    mutate(`Pr(>Chisq)` = round(`Pr(>Chisq)`, 3)) %>%
+    kbl(caption = "Contrasts (FDR corrected)") %>%
+    kable_classic(full_width = F, html_font = "Cambria")
+  
+  # Generate model plot
+  plot <-   # Visualizza le stime di probabilità
+    ggplot(x, aes(x = group, y = predicted_prob, color = video_set)) +
+    geom_point(position = position_dodge(0.9), size = 3) +
+    labs(x = "Group", y = "Predicted Probability", color = "Video Set")
+    
+ 
+    # flexplot(correct~video_set + group, x) +
+    # theme(legend.position = "none") +
+    # ylab("accuracy") +
+    # xlab(paste("Video", emo[i]))
+
+ 
+  
   # Save the results
-  save(fit, table, chiquadro, plot, chi_table, file = file.path("models", "accuracy", paste0("accuracy_", emo[i], ".RData")))
+  save(fit, table, chiquadro, plot, chi_table,contrast, file = file.path("models", "accuracy", paste0("accuracy_", emo[i], ".RData")))
 }
 
 #################################################

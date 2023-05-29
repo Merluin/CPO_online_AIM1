@@ -48,10 +48,10 @@ demo<- dat_fit%>%
   mutate(Exp.trial = 1:n()) %>% 
   ungroup()%>%
   filter(Exp.trial==1)%>%
-  dplyr::select(id, Pt.gender, Pt.study, Pt.age, Pt.sb,Pt.group)%>%
+  dplyr::select(Pt.code,match, Pt.gender, Pt.study, Pt.age, Pt.sb,Pt.group,Madrs_Punteggi)%>%
   mutate(Pt.gender = ifelse(Pt.gender == "F","Female","Male"))%>%
-  'colnames<-'(c("Subject","Gender","Education" ,"Age", "Sunnybrook","Group"))%>%
-     dplyr::select(Group,Subject,Gender,Age,Education,Sunnybrook)
+  'colnames<-'(c("Subject","Match","Gender","Education" ,"Age", "Sunnybrook","Group","Madrs"))%>%
+     dplyr::select(Group,Subject,Match,Gender,Age,Education,Sunnybrook,Madrs)
   
 # %>%
 #   mutate(Match = case_when(Subject == 1  ~ 1,
@@ -77,7 +77,7 @@ pt <- demo%>%
   mutate(n = 1)%>%
   dplyr::select(Group,Subject,Gender,n,Age,Education)%>%
   group_by(Group,Gender) %>% 
-  summarise(n = sum(n),
+  summarise(n = round(sum(n)),
             Age_mean = mean(Age),
             Age_Sd = sd(Age),
             Education_mean = mean(Education),
@@ -114,7 +114,7 @@ dat_neutral <- dat %>%
          video_set = ifelse(video_set == "full","ADFES" , "JeFFE" ),
          emotion = "neutral",
          degree_emo = "no angle")%>%
-  dplyr::select(id,emotion,degree_emo,Pt.group,video_set,theta,magnitude)%>%
+  dplyr::select(Pt.code,emotion,degree_emo,Pt.group,video_set,theta,magnitude)%>%
   na.omit()%>%
   group_by(emotion,degree_emo,Pt.group,video_set)%>%
   summarise(theta = rad_to_deg(CircStats::circ.mean(theta)) %% 360,
@@ -128,12 +128,17 @@ dat_neutral <- dat %>%
 tab_eda <- dat_fit %>% 
   mutate(group = Pt.group)%>%
   drop_na(theta)%>%
-  group_by(group, emotion,  video_set) %>%
+  group_by(Pt.code,group, emotion,  video_set) %>%
   summarise(m_angle = rad_to_deg(CircStats::circ.mean(theta)) %% 360,
             var_angle = 1 - CircStats::circ.disp(theta)$var,
             m_int = mean(magnitude),
             sd_int = sd(magnitude)) %>% 
-  left_join(., emo_coords %>% dplyr::select(emotion, degree_emo), by = "emotion") %>% 
+  group_by(group, emotion,  video_set) %>%
+  summarise(m_angle = rad_to_deg(CircStats::circ.mean(m_angle)) %% 360,
+            var_angle = 1 - CircStats::circ.disp(var_angle)$var,
+            m_int = mean(m_int),
+            sd_int = sd(sd_int))%>%
+ left_join(., emo_coords %>% dplyr::select(emotion, degree_emo), by = "emotion") %>% 
   dplyr::select(emotion, degree_emo, group, everything()) %>% 
   clean_emotion_names(emotion) %>% 
   mutate(emotion = factor(emotion),

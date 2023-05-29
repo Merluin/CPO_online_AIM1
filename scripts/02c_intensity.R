@@ -58,8 +58,10 @@ dat <- readRDS(file.path("data",paste0(datasetname,"_valid.rds")))
 intensity_mean <-  dat_fit %>%
   mutate(correct = ifelse(emotion == resp_emotion_label, 1, 0),
          correct = as.factor(correct)) %>%
-  dplyr::select(id, magnitude, video_set, emotion, Pt.group, correct) %>%
+  dplyr::select(Pt.code, magnitude, video_set, emotion, Pt.group, correct) %>%
   'colnames<-'(c("subject", "intensity" ,"video_set", "emotion", "group", "correct")) %>%
+  mutate(video_set = factor(video_set, levels = c("ADFES","JeFFE")),
+         group = factor(group, levels = c("control","palsy")))%>%
   group_by(subject, group, emotion, video_set, correct) %>%
   summarise(int_mean = mean(intensity)) %>%
   drop_na(int_mean)
@@ -70,8 +72,10 @@ dat_neutral <- dat %>%
   mutate(video_set = Video.intensity,
   video_set = ifelse(video_set == "full","ADFES" , "JeFFE" ),
   emotion = "neutral")%>%
-  dplyr::select(id,Pt.group,emotion,video_set,magnitude)%>%
+  dplyr::select(Pt.code,Pt.group,emotion,video_set,magnitude)%>%
   'colnames<-'(c("subject" ,"group","emotion","video_set","rho"))%>%
+  mutate(video_set = factor(video_set, levels = c("ADFES","JeFFE")),
+         group = factor(group, levels = c("control","palsy")))%>%
   drop_na(rho)%>%
   group_by(subject,group,emotion,video_set)%>%
   summarise(int_mean = mean(rho))
@@ -133,7 +137,7 @@ tab_intensity <- intensity_mean%>%
   reframe(int_mean = mean(int_mean))%>%
   spread(video_set,int_mean)%>%
   mutate(set_diff = ADFES- JeFFE)%>%
-  'colnames<-'(c("Emotion" ,"Group","Video~ADEFS~", "Video~JeFFE~","Intensity~Bias~" ))%>%
+  'colnames<-'(c("Emotion" ,"Group","Video~ADEFS~", "Video~JeFFE~","DELTA~intensity~" ))%>%
   flextable_with_param() %>% 
   align(part = "header", align = "center") %>% 
   align(j = 2, part = "body", align = "center") %>% 
@@ -144,37 +148,46 @@ saveRDS(tab_intensity, file = here("objects", "intensity_tables.rds"))
 
 # Fit linear mixed-effects model for each emotion ---------------------------------------
 
-emo <- c("anger", "disgust", "fear", "happiness", "sadness", "surprise","neutral")
+emo <- c("full","anger", "disgust", "fear", "happiness", "sadness", "surprise","neutral")
+
+full_emotion_plot<- flexplot(int_mean~emotion+group |  video_set,
+                             spread = "stdev", # sterr, stdev, 
+                             data = intensity_mean,
+                             alpha = 0.07) +
+  theme(legend.position = "bottom") +
+  ylab("Perceived intensity (px)") +
+  xlab("")
+
 
 for(i in 1:length(emo)){
   
-  # Fit linear mixed-effects model
+  
   
   if(emo[i]== "neutral"){
     # Fit the model for neutral data
-    fit <- lmer(int_mean ~ video_set * group + (1|subject) ,
-                data = dat_neutral)
+    model <- c("int_mean ~ group * video_set + (1|subject)")
+    dataset <-  dat_neutral
+  }else if((emo[i]== "full")){
+    # Fit the model for each emotion
+    model <- c("int_mean ~ emotion * group * video_set + (1|subject)")
+    dataset <- intensity_mean%>%
+                  filter( correct == 1 & emotion != "happiness")
   }else{
     # Fit the model for each emotion
-    fit <- lmer(int_mean ~ video_set * group + (1|subject),
-                data = intensity_mean %>%
-                  filter(emotion == emo[i] & correct == 1))
+    model <- c("int_mean ~ group * video_set + (1|subject)")
+    dataset <- intensity_mean%>%
+      filter(emotion == emo[i] & correct == 1)
   }
   
-  
-  
+  # Fit linear mixed-effects model
+  fit <- lmer(model,
+              data = dataset)
+
   # Generate table summary
-  table <- tab_model(fit, show.df = TRUE) #, string.p = "p adjusted", p.adjust = "fdr")
+  table <- tab_model(fit, show.df = TRUE, string.p = "p adjusted", p.adjust = "fdr")
   
   # Perform ANOVA
-  chiquadro <- car::Anova(fit, type = 3)
-  
-  # Generate model plot
-  plot <- flexplot::visualize(fit, plot = "model") +
-    theme(legend.position = "none") +
-    ylab("Perceived intensity (px)") +
-    xlab(paste("Video", emo[i]))
-  
+  chiquadro <- Anova(fit,type='III')
   # Create ANOVA table
   chi_table <- chiquadro %>%
     drop_na(`Pr(>Chisq)`) %>%
@@ -183,8 +196,46 @@ for(i in 1:length(emo)){
     column_spec(4, color = ifelse(chiquadro$`Pr(>Chisq)` <= 0.05, "red", "black")) %>%
     kable_classic(full_width = F, html_font = "Cambria")
   
+  #Contrasts
+  contrast<-rbind(testInteractions(fit, pairwise = "group", adjustment = "fdr"),
+        testInteractions(fit, pairwise = "video_set", adjustment = "fdr"),
+        testInteractions(fit, pairwise = "group", fixed = "video_set", adjustment = "fdr"))
+  
+  p_red<- chiquadro
+  p_red[4,]<-p_red[3,]
+  
+  contrast<-contrast%>%
+    drop_na(`Pr(>Chisq)`) %>%
+    mutate(`Pr(>Chisq)` = round(`Pr(>Chisq)`, 3)) %>%
+    kbl(caption = "Contrasts (FDR corrected)") %>%
+    kable_classic(full_width = F, html_font = "Cambria")
+  
+  # Generate model plot
+  # plot <- flexplot::visualize(fit,
+  #                             plot = c("all", "residuals", "model"),
+  #                             formula = NULL,
+  #                             sample = 3,
+  #                             plots.as.list = FALSE) +
+  #   theme(legend.position = "none") +
+  #   ylab("Perceived intensity (px)") +
+  #   xlab(paste("Video", emo[i]))
+
+  plot<- flexplot(int_mean~emotion+group |  video_set,
+                               spread = "stdev", # sterr, stdev, 
+                               data = dataset,
+                               alpha = 0.07) +
+    theme(legend.position = "bottom") +
+    ylab("Perceived intensity (px)") +
+    xlab("")
+  
+  
+  
+
+  
+  
+  
   # Save the results
-  save(fit, table, chiquadro, plot, chi_table, file = file.path("models", "intensity", paste0("intensity_", emo[i], ".RData")))
+  save(fit, table, chiquadro, plot, chi_table,contrast,full_emotion_plot, file = file.path("models", "intensity", paste0("intensity_", emo[i], ".RData")))
 }
 
 

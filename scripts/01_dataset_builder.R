@@ -94,7 +94,7 @@ dat_neutral <- dat %>%
          emotion = factor(emotion),
          video_set = Video.intensity)%>%
   mutate(video_set = ifelse(video_set == "full","ADFES" , "JeFFE" ))%>%
-  dplyr::select(id,video_set,Pt.group,theta_cen)%>%
+  dplyr::select(Pt.code,video_set,Pt.group,theta_cen)%>%
   'colnames<-'(c("subject" ,"video_set","group","theta"))%>%
   drop_na(theta)%>%
   group_by(subject,group,video_set)%>%

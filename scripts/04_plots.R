@@ -116,6 +116,27 @@ plot_gew_emotions <- dat_plot %>%
         panel.background = element_rect(fill = "white", color = NA)) +
   scale_fill_manual(values = c("NA", "white"))
 
+# Emotions resps Plots GW1 ---------------------------------------------------------------
+
+plot_gew_emotions_GW1 <- dat_plot %>% 
+  filter(emotion != "Neutral", Wheel.task == "task", Wheel.name == "GW1") %>% 
+  ggplot(aes(x = x_cen, y = y_cen, color = Pt.group)) +
+  ggpubr::background_image(bg) +
+  geom_point(alpha = 0.5, size = 1) +
+  ggh4x::facet_nested(  video_set  ~ emotion) +
+  coord_fixed(xlim = c(-300, 300), ylim = c(-300, 300)) +
+  theme_minimal() +
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.title.x = element_blank(),
+        strip.text.x = element_text(size = 14, face = "bold"),
+        strip.text.y = element_text(size = 14, face = "bold"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill = "white", color = NA)) +
+  scale_fill_manual(values = c("NA", "white"))
+
 # Emotions circular mean Plots ---------------------------------------------------------------
 
 meandegree_plot <- dat %>% 
@@ -125,7 +146,7 @@ meandegree_plot <- dat %>%
           video_set = ifelse(video_set == "Full","ADFES" , "JeFFE" ),
           emotion = factor(emotion),
           Group = Pt.group) %>%
-dplyr::select(id,Group,emotion,Wheel.name, video_set, diff, degree)%>%
+dplyr::select(Pt.code,Group,emotion,Wheel.name, video_set, diff, degree)%>%
   group_by(Group,emotion,Wheel.name,video_set)%>%
   summarise(Theta = mean.circular(diff, na.rm = TRUE),
             Kappa = rho.circular(degree, na.rm = TRUE)) %>%
@@ -151,7 +172,7 @@ plot_Theta_Kappa <-meandegree_plot%>%
 plot_list <- make_named_list(gew_legend,
                              neutral_plot,
                              plot_gew_legend_neutral, 
-                             plot_gew_emotions,
+                             plot_gew_emotions,plot_gew_emotions_GW1,
                              plot_Theta_Kappa)
 
 saveRDS(plot_list, file = "objects/paper_plots.rds")
