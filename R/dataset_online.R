@@ -20,12 +20,29 @@ fileq<-list.files(folder_dir,pattern= 'questionnaire') # from gorilla
 filedemo<-list.files(folder_dir,pattern= 'Pazienti') # from drive
 
 
+
 # Demographic Dataset ------------------------------------------------------------
-demo<- read.csv(file.path(folder_dir,filedemo), sep=",", header=TRUE,stringsAsFactors = FALSE,na.strings= "aa")%>%
-  filter(Exp.online == "TRUE")%>%
-  dplyr::select(ID_gorilla,Codice.città,Gruppo,Genere,Età,Anni.istruzione,Sunnybrook,MADRS.Tot)%>%
-  'colnames<-'(c("Participant.Public.ID" ,"code","gruppo","gender","age", "study","SB","madrs"))
-demo$id <- row.names(demo)
+#from gorilla
+# demo<- read.csv(file.path(folder_dir,filedemo), sep=";", header=TRUE,stringsAsFactors = FALSE,na.strings= "aa")%>%
+#   filter(Exp.online == "TRUE")%>%
+#   dplyr::select(ID_gorilla,Codice.città,Gruppo,Genere,Età,Anni.istruzione,Sunnybrook,MADRS.Tot)%>%
+#   'colnames<-'(c("Participant.Public.ID" ,"code","gruppo","gender","age", "study","SB","madrs"))
+# demo$id <- row.names(demo)
+#demo$id <- row.names(demo)
+
+#from drive
+demo<- read.csv(file.path(folder_dir,filedemo), sep=";", header=TRUE,stringsAsFactors = FALSE,na.strings= "aa")%>%
+  'colnames<-'(c("Participant.Public.ID", "id",               
+                 "match", "Gruppo",                      
+                 "Genere", "Età",                          
+                 "Scolarità", "Sunnybrook",                   
+                 "Madrs_Punteggi", "Madrs_Interpretazione",        
+                 "Tristezza_percepita", "Tristezza_riferita",          
+                 "Tensione_interna", "Riduzione_sonno",           
+                 "Riduzione_appetito","Difficoltà_concentrazione",    
+                 "Stanchezza","Incapacità_provare_sensazioni",
+                 "Pensieri_pessimistici","Idee_di_suicidio"))
+
 
 # Info Dataset ------------------------------------------------------------
 # info<- read.csv(file.path(folder_dir,fileq), sep=",", header=TRUE,stringsAsFactors = FALSE)
@@ -47,11 +64,20 @@ dplyr::select( "Local.Date", "Participant.Public.ID" ,"Trial.Number",
   "Videos", "intensity", "file_gender", "duration","emotion", "identity")
 
 # Final Dataset -----------------------------------------------------------
+                  
+
+
+
 data<-left_join(demo,dataset, by = "Participant.Public.ID")%>%
-  dplyr::select("Local.Date","Trial.Number","Participant.Public.ID","code", "gruppo","gender","study","age", "SB","madrs","id",
+  dplyr::select("Local.Date","Trial.Number","Participant.Public.ID","id","match", "Gruppo","Genere","Scolarità","Età", "Sunnybrook","Madrs_Punteggi",
+                "Madrs_Interpretazione","Tristezza_percepita", "Tristezza_riferita","Tensione_interna", "Riduzione_sonno","Riduzione_appetito",
+                "Difficoltà_concentrazione","Stanchezza","Incapacità_provare_sensazioni","Pensieri_pessimistici","Idee_di_suicidio",        
      "Screen.Name", "Reaction.Time", "X.Coordinate", "Y.Coordinate", "display", 
     "Videos", "intensity", "file_gender", "emotion", "identity")%>%
-  'colnames<-'(c("Exp.date","Exp.trial","Pt.Public.ID","Pt.code" ,"Pt.group","Pt.gender","Pt.study", "Pt.age","Pt.sb","Pt.madrs","id",
+  
+  'colnames<-'(c("Exp.date","Exp.trial","Pt.Public.ID","Pt.code","match" ,"Pt.group","Pt.gender","Pt.study", "Pt.age","Pt.sb","Madrs_Punteggi",
+                 "Madrs_Interpretazione","Tristezza_percepita", "Tristezza_riferita","Tensione_interna", "Riduzione_sonno","Riduzione_appetito",
+                 "Difficoltà_concentrazione","Stanchezza","Incapacità_provare_sensazioni","Pensieri_pessimistici","Idee_di_suicidio",  
                 "Wheel.name", "Wheel.rt", "Wheel.x", "Wheel.y", "Wheel.task", 
                "Video.name", "Video.intensity", "Video.gender", "Video.emotion", "Video.id"))%>%
   mutate(Wheel.y = Wheel.y - 300,
@@ -61,7 +87,7 @@ data<-left_join(demo,dataset, by = "Participant.Public.ID")%>%
          Pt.Public.ID = as.factor(Pt.Public.ID),
          Pt.code = as.factor(Pt.code),
          Pt.gender = as.factor(Pt.gender),
-         Pt.group = ifelse(Pt.group == "pazienti","palsy","control"),
+         Pt.group = ifelse(Pt.group == "Paziente","palsy","control"),
          Pt.study = as.numeric(Pt.study),
          Pt.age = as.numeric(Pt.age),
          Wheel.name = as.factor(Wheel.name),
