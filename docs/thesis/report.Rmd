@@ -178,6 +178,11 @@ data_list$paper_plots$plot_gew_emotions
 
 ```
 
+```{r gewemotionsgw1, fig.cap = "GEW 1 responses as a function of displayed Emotion, Video set and group.", fig.width=15, fig.height=10, out.width="80%", echo=FALSE, warning=FALSE}
+
+data_list$paper_plots$plot_gew_emotions_GW1
+
+```
 
 ## Descriptive table 
 Table 1.1 represents all participants' demographic informations.
@@ -196,11 +201,11 @@ data_list$paper_tables$pt_tab
 
 ```
 
-Table 1.3 represents all participants' responses for each experimental condition in terms of mean degree response (bias), variance (i.e., 1-kappa), intensity in px.
-\n
-```{r gewemotionstab, fig.width=10, fig.height=10, out.width="50%", echo=FALSE, warning=FALSE}
-data_list$paper_tables$tab_eda
-```
+<!-- Table 1.3 represents all participants' responses for each experimental condition in terms of mean degree response (bias), variance (i.e., 1-kappa), intensity in px. -->
+<!-- \n -->
+<!-- ```{r gewemotionstab, fig.width=10, fig.height=10, out.width="50%", echo=FALSE, warning=FALSE} -->
+<!-- data_list$paper_tables$tab_eda -->
+<!-- ``` -->
 
 
 # Results
@@ -219,6 +224,8 @@ For each section will use the same approach:\
 \newpage
 
 ## Accuracy
+we regressed participants’ correct responses on these sets of regressors [correct ∼ group + video_set +  (1 |ID)] and computed significance levels for the fixed and random effects using the “anova” function (lmerTest package), which returns a Type III ANOVA table with significance levels.
+
 <br/>
 
 ```{r, acctab, echo = F, out.width="100%",  warning=FALSE,message=FALSE}
@@ -249,9 +256,9 @@ data_list$plot_frequencies_gew2
   <div class = "column">
 ```{r,  echo = F,  warning=FALSE,message=FALSE}
 load(here("models","accuracy","accuracy_surprise.RData"))
-table
-
 chi_table
+
+contrast
 ```
   </div>
   <div class = "column">
@@ -271,8 +278,9 @@ plot
   <div class = "column">
 ```{r,  echo = F,  warning=FALSE,message=FALSE}
 load(here("models","accuracy","accuracy_anger.RData"))
-table
 chi_table
+
+contrast
 ```
   </div>
   <div class = "column">
@@ -292,8 +300,9 @@ plot
   <div class = "column">
 ```{r,  echo = F,  warning=FALSE,message=FALSE}
 load(here("models","accuracy","accuracy_disgust.RData"))
-table
 chi_table
+
+contrast
 ```
   </div>
   <div class = "column">
@@ -313,8 +322,9 @@ plot
   <div class = "column">
 ```{r,  echo = F,  warning=FALSE,message=FALSE}
 load(here("models","accuracy","accuracy_fear.RData"))
-table
 chi_table
+
+contrast
 ```
   </div>
   <div class = "column">
@@ -334,8 +344,9 @@ plot
   <div class = "column">
 ```{r,  echo = F,  warning=FALSE,message=FALSE}
 load(here("models","accuracy","accuracy_happiness.RData"))
-table
 chi_table
+
+contrast
 ```
   </div>
   <div class = "column">
@@ -355,8 +366,9 @@ plot
   <div class = "column">
 ```{r,  echo = F,  warning=FALSE,message=FALSE}
 load(here("models","accuracy","accuracy_sadness.RData"))
-table
 chi_table
+
+contrast
 ```
   </div>
   <div class = "column">
@@ -644,8 +656,23 @@ plot
 
 \n
 ## Perceived intensity
+
+we regressed participants’ percived intensity (in pixel) responses on these sets of regressors [correct ∼ group + video_set +  (1 |ID)] and computed significance levels for the fixed and random effects using the “anova” function (lmerTest package), which returns a Type III ANOVA table with significance levels.
 \n
-### surprise ~ video_set * group * correct + (1|subject)
+```{r inttab, fig.width=10, fig.height=10, out.width="50%", echo=FALSE, warning=FALSE}
+
+data_list$intensity_tables
+
+```
+
+```{r intfull, fig.cap = "Percived intensity (px) mean and standard deviation", fig.width=15, fig.height=10, out.width="80%", echo=FALSE, warning=FALSE}
+
+load(here("models","intensity","intensity_happiness.RData"))
+full_emotion_plot
+
+```
+
+### surprise ~ video_set * group + (1|subject)
 \n
 
 <br/>
@@ -656,18 +683,19 @@ plot
   <div class = "column">
 ```{r,  echo = F,  warning=FALSE,message=FALSE}
 load(here("models","intensity","intensity_surprise.RData"))
-table
 chi_table
+
+contrast
 ```
   </div>
   <div class = "column">
-```{r,fig.width=5,fig.height=5, echo = F,  warning=FALSE,message=FALSE}
+```{r,fig.cap = "Percived Intensity (Mean and Sd)",fig.width=5,fig.height=5, echo = F,  warning=FALSE,message=FALSE}
 plot
 ```
   </div>
 </div>
 
-### anger ~ video_set * group * correct + (1|subject)
+### anger ~ video_set * group + (1|subject)
 \n
 <br/>
 <div class = "row">
@@ -677,18 +705,19 @@ plot
   <div class = "column">
 ```{r,  echo = F,  warning=FALSE,message=FALSE}
 load(here("models","intensity","intensity_anger.RData"))
-table
 chi_table
+
+contrast
 ```
   </div>
   <div class = "column">
-```{r,fig.width=5,fig.height=5, echo = F,  warning=FALSE,message=FALSE}
+```{r,fig.cap = "Percived Intensity (Mean and Sd)",fig.width=5,fig.height=5, echo = F,  warning=FALSE,message=FALSE}
 plot
 ```
   </div>
 </div>
 
-### disgust ~ video_set * group * correct + (1|subject)
+### disgust ~ video_set * group + (1|subject)
 \n
 <br/>
 <div class = "row">
@@ -698,18 +727,19 @@ plot
   <div class = "column">
 ```{r,  echo = F,  warning=FALSE,message=FALSE}
 load(here("models","intensity","intensity_disgust.RData"))
-table
 chi_table
+
+contrast
 ```
   </div>
   <div class = "column">
-```{r,fig.width=5,fig.height=5, echo = F,  warning=FALSE,message=FALSE}
+```{r,fig.cap = "Percived Intensity (Mean and Sd)",fig.width=5,fig.height=5, echo = F,  warning=FALSE,message=FALSE}
 plot
 ```
   </div>
 </div>
 
-### fear ~ video_set * group * correct + (1|subject)
+### fear ~ video_set * group + (1|subject)
 \n
 <br/>
 <div class = "row">
@@ -719,18 +749,19 @@ plot
   <div class = "column">
 ```{r,  echo = F,  warning=FALSE,message=FALSE}
 load(here("models","intensity","intensity_fear.RData"))
-table
 chi_table
+
+contrast
 ```
   </div>
   <div class = "column">
-```{r,fig.width=5,fig.height=5, echo = F,  warning=FALSE,message=FALSE}
+```{r,fig.cap = "Percived Intensity (Mean and Sd)",fig.width=5,fig.height=5, echo = F,  warning=FALSE,message=FALSE}
 plot
 ```
   </div>
 </div>
 
-### happiness ~ video_set * group * correct + (1|subject)
+### happiness ~ video_set * group + (1|subject)
 \n
 <br/>
 <div class = "row">
@@ -740,18 +771,19 @@ plot
   <div class = "column">
 ```{r,  echo = F,  warning=FALSE,message=FALSE}
 load(here("models","intensity","intensity_happiness.RData"))
-table
 chi_table
+
+contrast
 ```
   </div>
   <div class = "column">
-```{r,fig.width=5,fig.height=5, echo = F,  warning=FALSE,message=FALSE}
+```{r,fig.cap = "Percived Intensity (Mean and Sd)",fig.width=5,fig.height=5, echo = F,  warning=FALSE,message=FALSE}
 plot
 ```
   </div>
 </div>
 
-### sadness ~ video_set * group * correct + (1|subject)
+### sadness ~ video_set * group + (1|subject)
 \n
 <br/>
 <div class = "row">
@@ -761,12 +793,13 @@ plot
   <div class = "column">
 ```{r,  echo = F,  warning=FALSE,message=FALSE}
 load(here("models","intensity","intensity_sadness.RData"))
-table
 chi_table
+
+contrast
 ```
   </div>
   <div class = "column">
-```{r,fig.width=5,fig.height=5, echo = F,  warning=FALSE,message=FALSE}
+```{r,fig.cap = "Percived Intensity (Mean and Sd)",fig.width=5,fig.height=5, echo = F,  warning=FALSE,message=FALSE}
 plot
 ```
   </div>
@@ -782,15 +815,37 @@ plot
   <div class = "column">
 ```{r,  echo = F,  warning=FALSE,message=FALSE}
 load(here("models","intensity","intensity_neutral.RData"))
-table
 chi_table
+
+contrast
 ```
   </div>
   <div class = "column">
-```{r,fig.width=5,fig.height=5, echo = F,  warning=FALSE,message=FALSE}
+```{r,fig.cap = "Percived Intensity (Mean and Sd)",fig.width=5,fig.height=5, echo = F,  warning=FALSE,message=FALSE}
 plot
 ```
   </div>
 </div>
+
+<!-- ### emotions ~ video_set * group  + (1|subject) -->
+<!-- \n -->
+<!-- <br/> -->
+<!-- <div class = "row"> -->
+<!--   <div class = "col col-lg-2"> -->
+<!--   \n -->
+<!--   </div> -->
+<!--   <div class = "column"> -->
+<!-- ```{r,  echo = F,  warning=FALSE,message=FALSE} -->
+<!-- load(here("models","intensity","intensity_full.RData")) -->
+<!-- table -->
+<!-- chi_table -->
+<!-- ``` -->
+<!--   </div> -->
+<!--   <div class = "column"> -->
+<!-- ```{r,fig.width=5,fig.height=5, echo = F,  warning=FALSE,message=FALSE} -->
+<!-- plot -->
+<!-- ``` -->
+<!--   </div> -->
+<!-- </div> -->
 
 # References
