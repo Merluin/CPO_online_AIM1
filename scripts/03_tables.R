@@ -48,10 +48,10 @@ demo<- dat_fit%>%
   mutate(Exp.trial = 1:n()) %>% 
   ungroup()%>%
   filter(Exp.trial==1)%>%
-  dplyr::select(Pt.code,match, Pt.gender, Pt.study, Pt.age, Pt.sb,Pt.group,Madrs_Punteggi)%>%
+  dplyr::select(Pt.code,match, Pt.gender, Pt.study, Pt.age, Pt.sb,Pt.group,Madrs_Punteggi, Madrs_Interpretazione)%>%
   mutate(Pt.gender = ifelse(Pt.gender == "F","Female","Male"))%>%
-  'colnames<-'(c("Subject","Match","Gender","Education" ,"Age", "Sunnybrook","Group","Madrs"))%>%
-     dplyr::select(Group,Subject,Match,Gender,Age,Education,Sunnybrook,Madrs)
+  'colnames<-'(c("Subject","Match","Gender","Education" ,"Age", "Sunnybrook","Group","Madrs","Interpretation"))%>%
+     dplyr::select(Group,Subject,Match,Gender,Age,Education,Sunnybrook,Madrs,Interpretation)
   
 # %>%
 #   mutate(Match = case_when(Subject == 1  ~ 1,
