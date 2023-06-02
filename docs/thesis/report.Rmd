@@ -119,7 +119,7 @@ I_{ij} = \sqrt{x^2 + y^2}
 
 For the intensity responses, we Fit a linear mixed-effects model (LMM) to data, via REML or maximum likelihood.we used lme4 R package [v1.1-33; @lme4].
 
-For the intensity responses, we fit generalized linear models (glm), specified by giving a symbolic description of the linear predictor and a description of the error distribution. we used Stats R package (v.4.3.0; R Core Team (2012)).
+For the accuracy responses, we fit generalized linear models (glm), specified by giving a symbolic description of the linear predictor and a description of the error distribution. we used Stats R package (v.4.3.0; R Core Team (2012)).
 <!-- For the response angle (i.e., *bias*) we decided to normalized the angle error degree in order to apply non circular statistics.  -->
 
 <!-- use a generalized linear mixed-effect model using bpnreg R package [v2.0.2; @bpnreg]. It is based on the 'embedding' approach to circular modelling and makes use of the projected normal distribution. Its estimation method is a Bayesian MCMC sampler. Further technical details can be found in [@cremers2018assessing] and [@cremers2018one]. -->
@@ -151,7 +151,7 @@ lmer(x ~ video_set * group + (1|subject),
                 data = data %>%
                   filter(emotion))
 
-fit <- glm(x ~  group * video_set, data = x, family = binomial)
+glm(x ~  group * video_set, data = x, family = binomial)
 ```
 
 ## Experiment info
@@ -213,8 +213,6 @@ data_list$paper_tables$pt_tab
 <br/>
 In the next section we presented all fitted models for:\
 - Accuracy\
-- Bais\
-- Uncertainty\
 - Intencity\
 <br/>
 For each section will use the same approach:\
@@ -224,7 +222,8 @@ For each section will use the same approach:\
 \newpage
 
 ## Accuracy
-we regressed participants’ correct responses on these sets of regressors [correct ∼ group + video_set +  (1 |ID)] and computed significance levels for the fixed and random effects using the “anova” function (lmerTest package), which returns a Type III ANOVA table with significance levels.
+
+we regressed participants’ correct responses on these sets of regressors [correct ∼ group + video_set +  (1 |ID)] and computed significance levels for the fixed and random effects using the “anova” function, which returns a Type III ANOVA table with significance levels.
 
 <br/>
 
@@ -657,7 +656,7 @@ plot
 \n
 ## Perceived intensity
 
-we regressed participants’ percived intensity (in pixel) responses on these sets of regressors [correct ∼ group + video_set +  (1 |ID)] and computed significance levels for the fixed and random effects using the “anova” function (lmerTest package), which returns a Type III ANOVA table with significance levels.
+we regressed participants’ percived intensity (in pixel) responses on these sets of regressors [intensity ∼ group + video_set +  (1 |ID)] and computed significance levels for the fixed and random effects using the “anova” function, which returns a Type III ANOVA table with significance levels.
 \n
 ```{r inttab, fig.width=10, fig.height=10, out.width="50%", echo=FALSE, warning=FALSE}
 
