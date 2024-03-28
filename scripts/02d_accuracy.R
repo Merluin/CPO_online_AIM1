@@ -174,10 +174,10 @@ for(i in 1:length(emo)){
  
   contrast<-rbind(group,
                   video[1,],
-                  interaction[1,])
+                  interaction[1:2,])
   
-  p_red<- chiquadro
-  p_red[4,]<-p_red[3,]
+  # p_red<- chiquadro
+  # p_red[4,]<-p_red[3,]
   
   contrast<-contrast%>%
     drop_na(`Pr(>Chisq)`) %>%
